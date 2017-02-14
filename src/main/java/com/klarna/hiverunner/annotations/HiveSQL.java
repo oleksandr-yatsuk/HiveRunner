@@ -31,7 +31,7 @@ public @interface HiveSQL {
     /**
      * The hive sql files subject to test. Files will be executed in order
      */
-    String[] files();
+    String[] files() default {};
 
     /**
      * If the shell should be started automatically before the JUnit test method is called.

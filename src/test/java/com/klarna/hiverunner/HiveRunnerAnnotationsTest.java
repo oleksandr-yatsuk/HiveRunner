@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -40,10 +41,10 @@ import static org.hamcrest.collection.IsArrayContaining.hasItemInArray;
 public class HiveRunnerAnnotationsTest {
 
     @HiveSetupScript
-    private File setupFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupFile.csv").getPath());
+    private File setupFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupFile.csv").toURI());
 
     @HiveSetupScript
-    private Path setupPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupPath.csv").getPath());
+    private Path setupPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/setupPath.csv").toURI());
 
 
     @HiveSetupScript
@@ -58,14 +59,16 @@ public class HiveRunnerAnnotationsTest {
     @HiveSQL(files = {"hiveRunnerAnnotationsTest/hql1.sql"}, autoStart = false)
     private HiveShell hiveShell;
 
+    public HiveRunnerAnnotationsTest() throws URISyntaxException { }
+
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromString.csv")
     public String dataFromString = "1,B\n2,D\nE,F";
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromFile.csv")
-    public File dataFromFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData.csv").getPath());
+    public File dataFromFile = new File(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData.csv").toURI());
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/foo/fromPath.csv")
-    public Path dataFromPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData2.csv").getPath());
+    public Path dataFromPath = Paths.get(ClassLoader.getSystemResource("hiveRunnerAnnotationsTest/testData2.csv").toURI());
 
     @Before
     public void setup() {

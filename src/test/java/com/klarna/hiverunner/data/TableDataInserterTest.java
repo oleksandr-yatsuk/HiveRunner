@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.klarna.hiverunner.hadoop.AbsolutePath;
 import org.apache.hive.hcatalog.data.DefaultHCatRecord;
 import org.apache.hive.hcatalog.data.HCatRecord;
 import org.junit.Before;
@@ -32,7 +33,7 @@ public class TableDataInserterTest {
 
   @Before
   public void setUp() throws IOException {
-    dataLocation = hiveShell.getBaseDir().newFolder("target", "hiverunner_data").getAbsolutePath();
+    dataLocation = new AbsolutePath(hiveShell.getBaseDir().newFolder("target", "hiverunner_data")).toString();
     hiveShell.execute("create database testdb");
     hiveShell.execute("create table testdb.test_table (a STRING, b STRING) "
         + "PARTITIONED BY(local_date STRING) STORED AS ORC LOCATION '" + dataLocation + "'");

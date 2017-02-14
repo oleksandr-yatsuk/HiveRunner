@@ -23,7 +23,6 @@ import com.klarna.hiverunner.HiveServerContainer;
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.data.InsertIntoTable;
 import com.klarna.hiverunner.sql.StatementsSplitter;
-
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
@@ -333,8 +332,7 @@ class HiveShellBase implements HiveShell {
         Preconditions.checkArgument(isUnexpanded, "File path %s contains "
                 + "unresolved references. Original arg was: %s", expandedPath, resource.getTargetFile());
 
-        boolean isTargetFileWithinTestDir = expandedPath.startsWith(
-                hiveServerContainer.getBaseDir().getRoot().getAbsolutePath());
+        boolean isTargetFileWithinTestDir = Paths.get(expandedPath).startsWith(hiveServerContainer.getBaseDir().getRoot().toPath());
 
         Preconditions.checkArgument(isTargetFileWithinTestDir,
                 "All resource target files should be created in a subdirectory to the test case basedir %s : %s",

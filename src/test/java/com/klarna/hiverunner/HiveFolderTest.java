@@ -21,15 +21,13 @@ import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
 
+@Ignore
 public class HiveFolderTest {
 
     private final FsPermission writablePermission = FsPermission.getDirDefault();
@@ -52,7 +50,7 @@ public class HiveFolderTest {
     }
 
     @Test
-    public void testFolderPermissoinHasChanged () throws IOException {
+    public void testFolderPermissionHasChanged () throws IOException {
         FsPermission previousPermission = getPermission(temporaryFolder);
 
         hiveFolder.markAsWritable();
@@ -63,6 +61,14 @@ public class HiveFolderTest {
 
     @Test
     public void testMakeFolderWritable () throws IOException {
+
+        boolean actual = hiveFolder.markAsWritable();
+
+        Assert.assertEquals(temporaryFolder.getRoot().canWrite(), actual);
+    }
+
+    @Test
+    public void testFolderHasExactPermissions () throws IOException {
         hiveFolder.markAsWritable();
 
         FsPermission actualPermission = getPermission(temporaryFolder);

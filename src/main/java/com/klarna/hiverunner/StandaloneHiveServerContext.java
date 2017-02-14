@@ -17,6 +17,9 @@
 package com.klarna.hiverunner;
 
 import com.klarna.hiverunner.config.HiveRunnerConfig;
+import com.klarna.hiverunner.hadoop.HadoopHomeNotFoundException;
+import com.klarna.hiverunner.hadoop.HadoopRuntime;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
@@ -61,6 +64,8 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     @Override
     public final void init() {
 
+        configureHadoopHome();
+
         configureMiscHiveSettings(hiveConf);
 
         configureMetaStore(hiveConf);
@@ -79,6 +84,14 @@ public class StandaloneHiveServerContext implements HiveServerContext {
 
         overrideHiveConf(hiveConf);
 
+    }
+
+    protected void configureHadoopHome() {
+        try {
+            new HadoopRuntime().setHadoopHome();
+        } catch (HadoopHomeNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void configureMiscHiveSettings(HiveConf hiveConf) {
@@ -238,7 +251,8 @@ public class StandaloneHiveServerContext implements HiveServerContext {
     }
 
     protected final void createAndSetFolderProperty(String key, String folder, HiveConf conf, TemporaryFolder basedir) {
-        conf.set(key, newFolder(basedir, folder).getAbsolutePath());
+        String path = newFolder(basedir, folder).getAbsolutePath();
+        conf.set(key, FilenameUtils.separatorsToUnix(path));
     }
 
 }
